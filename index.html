@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TERMINAL</title>
+    <style>
+        body {
+            background-color: #000000;
+            color: #33ff33;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 0 0 8px rgba(51, 255, 51, 0.75);
+            overflow: hidden;
+            user-select: none;
+        }
+
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
+            z-index: 10;
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 18px;
+            height: 28px;
+            background-color: #33ff33;
+            vertical-align: middle;
+            margin-left: 2px;
+            animation: blink 1.2s steps(2, start) infinite;
+            box-shadow: 0 0 8px rgba(51, 255, 51, 0.75);
+        }
+
+        @keyframes blink {
+            to { visibility: hidden; }
+        }
+    </style>
+</head>
+<body>
+
+    <span id="display">10</span><span class="cursor"></span>
+
+<script>
+    // ----------------------------------------------------------------------
+    // GLOBAL TARGET DATE SETTING
+    // Change this to your exact project launch day!
+    // Format: "Month Day, Year Hours:Minutes:Seconds" (24-hour format)
+    // ----------------------------------------------------------------------
+    const targetDate = new Date("November 13, 2026 17:26:00").getTime();
+
+    function updateTerminal() {
+        const now = new Date().getTime();
+        const difference = targetDate - now;
+        const displayElement = document.getElementById("display");
+
+        if (difference <= 0) {
+            displayElement.innerHTML = "00:00:00:00";
+            return;
+        }
+
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+        // If there is 1 or more full days left, show ONLY the absolute number of days
+        if (days >= 1) {
+            displayElement.innerHTML = days;
+        } 
+        // Once it strikes the final 24 hours, break out into the live all-numbers clock
+        else {
+            const hStr = String(hours).padStart(2, '0');
+            const mStr = String(minutes).padStart(2, '0');
+            const sStr = String(seconds).padStart(2, '0');
+            displayElement.innerHTML = `00:${hStr}:${mStr}:${sStr}`;
+        }
+    }
+
+    setInterval(updateTerminal, 1000);
+    updateTerminal();
+</script>
+
+</body>
+</html>
